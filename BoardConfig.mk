@@ -90,6 +90,8 @@ TW_INCLUDE_CRYPTO := true
 #TW_INCLUDE_FBE := true
 
 # TWRP specific build flags
+TW_Y_OFFSET = 85
+TW_H_OFFSET = -85
 TW_THEME := portrait_hdpi
 RECOVERY_SDCARD_ON_DATA := true
 BOARD_HAS_NO_REAL_SDCARD := true
