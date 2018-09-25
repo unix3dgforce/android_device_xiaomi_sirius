@@ -10,7 +10,7 @@ Xiaomi Mi MI 8 Explorer Edition was announced and released in June 2018.
 | -----------: | :-------------------------------------------------- |
 | SoC          | Qualcomm SDM710 Snapdragon 710                      |
 | CPU          | 2x2.2 GHz 360 Gold & 6x1.7 GHz Kryo 360 Silver      |
-| GPU          | Adreno 630                                          |
+| GPU          | Adreno 616                                          |
 | Memory       | 4 GB RAM or 6 GB RAM (LPDDR4X)                      |
 | Shipped Android version | 8.0                                      |
 | Storage      | 128GB, 64GB UFS 2.1 flash storage  				 |
@@ -39,14 +39,14 @@ Finally execute these:
 ```
 export ALLOW_MISSING_DEPENDENCIES=true
 . build/envsetup.sh
-lunch omni_ursa-eng 
+lunch omni_sirius-eng 
 mka recoveryimage
 ```
 
 To test it:
 
 ```
-fastboot boot out/target/product/ursa/recovery.img
+fastboot boot out/target/product/sirius/recovery.img
 ```
 
 
