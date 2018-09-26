@@ -1,5 +1,3 @@
-on early-init
-    mkdir /firmware 0771 system system
 
 on fs
     wait /dev/block/platform/soc/${ro.boot.bootdevice}
@@ -10,16 +8,9 @@ on fs
     chown system system /dev/ion
     install_keyring
 
-    # Only needed when we don't include all required blobs for crypto
-    start prepdecrypt
-
-service prepdecrypt /init.prepdecrypt.sh
-    oneshot
-    user root
-    group root
-    disabled
-    seclabel u:r:recovery:s0
-
+on init
+    start hwservicemanager
+    setprop crypto.ready 1
 # Separate copy needed to use /sbin/linker64 instead of /system/bin/linker64
 service sbinqseecomd /sbin/qseecomd
     user root
@@ -67,9 +58,8 @@ service keymaster-3-0 /sbin/android.hardware.keymaster@3.0-service-qti
 
 on boot
     # Workaround for adb not coming up
-    setprop sys.usb.config mtp,adb
     setprop sys.usb.config adb
-    setprop sys.usb.configfs 1
+    #setprop sys.usb.configfs 1
 
 on property:crypto.ready=0
     stop sbinqseecomd
@@ -83,10 +73,25 @@ on property:crypto.ready=1
     start sbinqseecomd
 
 on property:sys.listeners.registered=true
-    start hwservicemanager
     start keymaster-3-0
     start gatekeeper-1-0
     start servicemanager
+
+
+on init
+    start fingerprintid
+    # Enable double-tap to wake
+    #write /sys/devices/virtual/touch/tp_dev/gesture_on 1
+    # Enable OTG
+    #write /sys/devices/soc/800f000.qcom,spmi/spmi-0/spmi0-02/800f000.qcom,spmi:qcom,pmi8998@2:qcom,qpnp-smb2/power_supply/usb/otg_switch 1
+
+# read ro.build.fingerprint from system, setprop it. for ota
+service fingerprintid /init.fingerprintid.sh
+    oneshot
+    disabled
+    user root
+    group root
+    seclabel u:r:recovery:s0
 
 on boot
     # Enable Power modes and set the CPU Freq Sampling rates
@@ -120,11 +125,11 @@ on boot
 on property:recovery.perf.mode=1
     write /sys/devices/system/cpu/cpu1/online 1
     write /sys/devices/system/cpu/cpu2/online 1
-    write /sys/devices/system/cpu/cpu3/online 0
+    write /sys/devices/system/cpu/cpu3/online 1
     write /sys/devices/system/cpu/cpu4/online 1
     write /sys/devices/system/cpu/cpu5/online 1
     write /sys/devices/system/cpu/cpu6/online 1
-    write /sys/devices/system/cpu/cpu7/online 0
+    write /sys/devices/system/cpu/cpu7/online 1
 
 on property:recovery.perf.mode=0
     write /sys/devices/system/cpu/cpu1/online 1
